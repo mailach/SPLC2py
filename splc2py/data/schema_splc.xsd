@@ -1,0 +1,45 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="vm">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="binaryOptions">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="configurationOption" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="name"/>
+                    <xs:element type="xs:string" name="outputString"/>
+                    <xs:element type="xs:string" name="prefix"/>
+                    <xs:element type="xs:string" name="postfix"/>
+                    <xs:element type="xs:string" name="parent"/>
+                    <xs:element name="impliedOptions">
+                      <xs:complexType mixed="true">
+                        <xs:sequence>
+                          <xs:element type="xs:string" name="options" minOccurs="0"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="excludedOptions">
+                      <xs:complexType mixed="true">
+                        <xs:sequence>
+                          <xs:element type="xs:string" name="options" maxOccurs="unbounded" minOccurs="0"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element type="xs:string" name="optional"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element type="xs:string" name="numericOptions"/>
+        <xs:element type="xs:string" name="booleanConstraints"/>
+        <xs:element type="xs:string" name="nonBooleanConstraints"/>
+        <xs:element type="xs:string" name="mixedConstraints"/>
+      </xs:sequence>
+      <xs:attribute type="xs:string" name="name"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
