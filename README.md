@@ -2,7 +2,12 @@
 
 A package for easy execution of SPLConqueror (https://github.com/se-sic/SPLConqueror) in your python workflows. The package relies on your local docker setup and uses docker-py (https://github.com/docker/docker-py) to execute a container with SPLConqueror. Note: You need to have docker installed and your executing user has to be member of the `docker` group (i.e. needs to be allowed to use docker without `sudo`).
 
+```
+pip install git+https://github.com/mailach/SPLC2py.git@main 
+```
+
 Currently the following SPLC functionalities are supported:
+
 
 ## Binary Sampling
 Sampling of *only* binary configuration Options. The `BinarySampler` class expects you to have a valid feature model in the xml scheme of SPLC. Your input is not validated, but will lead SPLC to fail. See the following example usecases, for all usecases you need a feature model loaded as `xml.etree.ElementTree` and instantiate the `BinarySampler` class.
