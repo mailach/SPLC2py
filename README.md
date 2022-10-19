@@ -1,6 +1,6 @@
 # SPLC2py
 
-A package for easy execution of SPLConqueror (https://github.com/se-sic/SPLConqueror) in your python workflows. The package relies on your local docker setup and uses docker-py (https://github.com/docker/docker-py) to execute a container with SPLConqueror. 
+A package for easy execution of SPLConqueror (https://github.com/se-sic/SPLConqueror) in your python workflows. The package relies on your local docker setup and uses docker-py (https://github.com/docker/docker-py) to execute a container with SPLConqueror. Note: You need to have docker installed and your executing user has to be member of the `docker` group (i.e. needs to be allowed to use docker without `sudo`).
 
 Currently the following SPLC functionalities are supported:
 
