@@ -1,6 +1,7 @@
 import logging
 import tempfile
 import os
+from typing import Sequence
 
 
 import xml.etree.ElementTree as ET
@@ -45,7 +46,7 @@ def binaryStrategyString(method: str, params: dict[str, str] = None):
     binStrategies = {
         "featurewise": _featurewise,
         "pairwise": _pairwise,
-        "negfeaturwise": _negfeaturewise,
+        "negfeaturewise": _negfeaturewise,
         "distance-based": _distancebased,
         "twise": _twise,
     }
@@ -58,9 +59,27 @@ def _extract_binary(config: str):
     return config
 
 
+def _get_binary_features(vm):
+    return [
+        option.find("name").text
+        for option in vm.find("binaryOptions").findall("configurationOption")
+    ]
+
+
+def _list_to_onehot(configs: Sequence[Sequence[str]], features):
+    onehot = []
+    for config in configs:
+        c = {}
+        for option in features:
+            c[option] = 1 if option in config else 0
+        onehot.append(c)
+    return onehot
+
+
 class BinarySampler:
     def __init__(self, vm: ET):
         self.vm = vm
+        self.binary_features = _get_binary_features(vm)
         self.splc = _splc.SplcExecutor()
 
     def _serialize_data(self, cache_dir: str = None):
@@ -69,13 +88,15 @@ class BinarySampler:
         with open(os.path.join(cache_dir, "script.a"), "w") as f:
             f.write(self.script)
 
-    def _transform_sample(self, cache_dir: str):
+    def _transform_sample(self, cache_dir: str, format: str = "list"):
         with open(os.path.join(cache_dir, "sampled.txt"), "r") as f:
             samples = f.readlines()
         configs = [_extract_binary(config) for config in samples]
+        if format == "onehot":
+            configs = _list_to_onehot(configs, self.binary_features)
         return configs
 
-    def sample(self, method: str, cache_dir: str = None):
+    def sample(self, method: str, format: str, cache_dir: str = None):
         if not cache_dir:
             cache_dir = tempfile.mkdtemp()
         self.script = _splc.generate_script(binary=binaryStrategyString(method))
@@ -85,5 +106,6 @@ class BinarySampler:
         self.splc.execute(cache_dir)
 
         # extract sampled configurations
-        configs = self._transform_sample(cache_dir)
-        print(configs)
+        configs = self._transform_sample(cache_dir, format)
+
+        return configs
