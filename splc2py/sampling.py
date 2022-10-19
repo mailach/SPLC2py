@@ -202,7 +202,7 @@ class BinarySampler(Sampler):
         return configs
 
 
-class NumericSampler(Sampler):
+class MixedSampler(Sampler):
     def _transform_sample(self, cache_dir: str, format: str = "list"):
         with open(os.path.join(cache_dir, "sampled.txt"), "r") as f:
             samples = f.readlines()
@@ -213,7 +213,8 @@ class NumericSampler(Sampler):
 
     def sample(
         self,
-        method: str,
+        binary_method: str,
+        numeric_method: str,
         format: str = "list",
         cache_dir: str = None,
         params=None,
@@ -221,7 +222,8 @@ class NumericSampler(Sampler):
         if not cache_dir:
             cache_dir = tempfile.mkdtemp()
         self.script = _splc.generate_script(
-            numeric=numericStrategyString(method, params)
+            binary=binaryStrategyString(binary_method, params),
+            numeric=numericStrategyString(numeric_method, params),
         )
 
         # serialize vm and script and execute splc
