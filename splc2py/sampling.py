@@ -35,7 +35,7 @@ def _distancebased(params: dict[str, str]):
 
 def _twise(params: dict[str, str]):
     try:
-        t = f"twise t: {params['t']}"
+        t = f"twise t:{params['t']}"
     except Exception as e:
         logging.error("For using twise sampling you need to specify t.")
         raise e
@@ -96,10 +96,16 @@ class BinarySampler:
             configs = _list_to_onehot(configs, self.binary_features)
         return configs
 
-    def sample(self, method: str, format: str, cache_dir: str = None):
+    def sample(
+        self,
+        method: str,
+        format: str = "list",
+        cache_dir: str = None,
+        params=None,
+    ):
         if not cache_dir:
             cache_dir = tempfile.mkdtemp()
-        self.script = _splc.generate_script(binary=binaryStrategyString(method))
+        self.script = _splc.generate_script(binary=binaryStrategyString(method, params))
 
         # serialize vm and script and execute splc
         self._serialize_data(cache_dir)
