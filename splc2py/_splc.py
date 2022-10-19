@@ -3,7 +3,7 @@ import docker
 
 
 def generate_script(binary: str = None, numeric: str = None):
-    script = f"log /application/data/logs.txt\nvm /application/data/vm.xml\nall /application/data/measurements.xml\n"
+    script = f"log /application/data/logs.txt\nvm /application/data/vm.xml\n\n"
     if binary:
         script += f"binary {binary}\n"
     script += f"printconfigs /application/data/sampled.txt\n"

@@ -52,24 +52,38 @@ def binaryStrategyString(method: str, params: dict[str, str] = None):
     return binStrategies[method](params)
 
 
+def _extract_binary(config: str):
+    config = config.split('"')[1].split("%;%")
+    config = [option for option in config if option != ""]
+    return config
+
+
 class BinarySampler:
-    def __init__(self, vm: ET, measurements: ET):
+    def __init__(self, vm: ET):
         self.vm = vm
-        self.measurements = measurements
         self.splc = _splc.SplcExecutor()
 
     def _serialize_data(self, cache_dir: str = None):
 
         self.vm.write(os.path.join(cache_dir, "vm.xml"))
-        self.measurements.write(os.path.join(cache_dir, "measurements.xml"))
         with open(os.path.join(cache_dir, "script.a"), "w") as f:
             f.write(self.script)
-        return cache_dir
+
+    def _transform_sample(self, cache_dir: str):
+        with open(os.path.join(cache_dir, "sampled.txt"), "r") as f:
+            samples = f.readlines()
+        configs = [_extract_binary(config) for config in samples]
+        return configs
 
     def sample(self, method: str, cache_dir: str = None):
         if not cache_dir:
             cache_dir = tempfile.mkdtemp()
         self.script = _splc.generate_script(binary=binaryStrategyString(method))
-        cache_dir = self._serialize_data(cache_dir)
+
+        # serialize vm and script and execute splc
+        self._serialize_data(cache_dir)
         self.splc.execute(cache_dir)
-        print(cache_dir)
+
+        # extract sampled configurations
+        configs = self._transform_sample(cache_dir)
+        print(configs)
