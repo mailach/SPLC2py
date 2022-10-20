@@ -69,7 +69,7 @@ sampler.sample(binary="twise", numeric="hypersampling", params = {"t":2, "precis
 
 
 ### Specifying the return format
-Currently, two return formats are supported. The default is `'list'` which will lead the sampler to return the configurations as a list of lists, where each list holds strings representing the enabled options. You can specifiy to get `'onehot'` encoded configurations, which will lead the sampler to return a list of dictionaries, in which each binary option is either 1 (enabled) or 0 (disabled) and each numeric option is assigned with a float value. 
+Currently, two return formats are supported. The default is `'list'` which will lead the sampler to return the configurations as a list of lists, where each list holds strings representing the enabled options. You can specifiy to get `'dict'` encoded configurations, which will lead the sampler to return a list of dictionaries, in which each binary option is either 1 (enabled) or 0 (disabled) and each numeric option is assigned with a float value. 
 
 ```python
 sampler.sample("featurewise") # returns a list of lists, holding enabled options
