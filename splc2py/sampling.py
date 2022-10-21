@@ -9,23 +9,23 @@ import xml.etree.ElementTree as ET
 from splc2py import _splc
 
 
-def _featurewise(params: dict[str, str] = None):
+def _featurewise(params=None):
     return "featurewise"
 
 
-def _pairwise(params: dict[str, str] = None):
+def _pairwise(params=None):
     return "pairwise"
 
 
-def _negfeaturewise(params: dict[str, str] = None):
+def _negfeaturewise(params=None):
     return "negfw"
 
 
-def _allbinary(params: dict[str, str] = None):
+def _allbinary(params=None):
     return "allbinary"
 
 
-def _distancebased(params: dict[str, str]):
+def _distancebased(params):
     try:
         db = f"distance-based optionWeight:{params['optionWeight']} numConfigs:{params['numConfigs']}"
     except Exception as e:
@@ -36,7 +36,7 @@ def _distancebased(params: dict[str, str]):
     return db
 
 
-def _twise(params: dict[str, str]):
+def _twise(params):
     try:
         t = f"twise t:{params['t']}"
     except Exception as e:
@@ -45,7 +45,7 @@ def _twise(params: dict[str, str]):
     return t
 
 
-def binaryStrategyString(method: str, params: dict[str, str] = None):
+def binaryStrategyString(method: str, params=None):
     binStrategies = {
         "featurewise": _featurewise,
         "pairwise": _pairwise,
@@ -57,19 +57,19 @@ def binaryStrategyString(method: str, params: dict[str, str] = None):
     return binStrategies[method](params)
 
 
-def _centralcomposite(params: dict[str, any]):
+def _centralcomposite(params):
     return "centralcomposite"
 
 
-def _boxbehnken(params: dict[str, any]):
+def _boxbehnken(params):
     return "boxbehnken"
 
 
-def _fullfactorial(params: dict[str, any]):
+def _fullfactorial(params):
     return "fullfactorial"
 
 
-def _random(params: dict[str, any]):
+def _random(params):
     try:
         r = f"random sampleSize:{params['sampleSize']} seed:{params['seed']}"
     except Exception as e:
@@ -80,7 +80,7 @@ def _random(params: dict[str, any]):
     return r
 
 
-def _hypersampling(params: dict[str, any]):
+def _hypersampling(params):
     try:
         r = f"hypersampling precision:{params['precision']}"
     except Exception as e:
@@ -89,7 +89,7 @@ def _hypersampling(params: dict[str, any]):
     return r
 
 
-def _onefactoratatime(params: dict[str, any]):
+def _onefactoratatime(params):
     try:
         r = f"onefactoratatime distinctValuesPerOption:{params['distinctValuesPerOption']}"
     except Exception as e:
@@ -100,7 +100,7 @@ def _onefactoratatime(params: dict[str, any]):
     return r
 
 
-def _plackettburman(params: dict[str, any]):
+def _plackettburman(params):
     try:
         pb = f"plackettburman measurements:{params['measurements']} level:{params['level']}"
     except Exception as e:
@@ -111,7 +111,7 @@ def _plackettburman(params: dict[str, any]):
     return pb
 
 
-def _kexchange(params: dict[str, any]):
+def _kexchange(params):
     try:
         k = f"kexchange sampleSize:{params['sampleSize']} k:{params['k']}"
     except Exception as e:
@@ -122,7 +122,7 @@ def _kexchange(params: dict[str, any]):
     return k
 
 
-def numericStrategyString(method: str, params: dict[str, any] = None):
+def numericStrategyString(method: str, params=None):
     numericStrategies = {
         "random": _random,
         "centralcomposite": _centralcomposite,
