@@ -1,12 +1,11 @@
 import logging
 import tempfile
-import os
 
 from typing import Sequence
 import xml.etree.ElementTree as ET
 
 
-from splc2py import _splc
+from splc2py import _splc, _transform
 
 
 def _featurewise(params=None):
@@ -193,11 +192,11 @@ class Sampler:
 
         # serialize data and script in tempdir and execute splc
         with tempfile.TemporaryDirectory() as tmpdir:
-            _splc.serialize_data(tmpdir, {"vm.xml": self.vm, "script.a": script})
+            _transform.serialize_data(tmpdir, {"vm.xml": self.vm, "script.a": script})
             self.splc.execute(tmpdir)
 
             # extract sampled configurations
-            configs = _splc.extract_samples(tmpdir, format)
+            configs = _transform.extract_samples(tmpdir, format)
             if format == "dict":
                 configs = _list_to_dict(configs, self.binary, self.numeric)
 

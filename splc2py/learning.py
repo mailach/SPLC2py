@@ -4,7 +4,7 @@ import tempfile
 import logging
 
 import pandas as pd
-from splc2py import _splc
+from splc2py import _splc, _transform
 
 
 class Model:
@@ -13,7 +13,7 @@ class Model:
         self.fitted = False
 
     def fit(self, measurements, nfp, mlsettings):
-        vm, measurements = _splc.pandas_to_xml(measurements, nfp)
+        vm, measurements = _transform.pandas_to_xml(measurements, nfp)
 
         params = {
             "vm.xml": vm,
@@ -26,9 +26,9 @@ class Model:
             "mlsettings.txt": _splc.generate_mlsettings(mlsettings),
         }
         with tempfile.TemporaryDirectory() as tmpdir:
-            _splc.serialize_data(tmpdir, params)
+            _transform.serialize_data(tmpdir, params)
             self.splc.execute(tmpdir)
-            self.model, self.learnHistory = _splc.extract_model_from_logs(tmpdir)
+            self.model, self.learnHistory = _transform.extract_model_from_logs(tmpdir)
         self.fitted = True
 
     def to_string(self):
