@@ -180,12 +180,6 @@ class Sampler:
         self.numeric = _get_numeric_features(vm)
         self.binary = _get_binary_features(vm)
 
-    def _serialize_data(self, cache_dir: str = None):
-
-        self.vm.write(os.path.join(cache_dir, "vm.xml"))
-        with open(os.path.join(cache_dir, "script.a"), "w") as f:
-            f.write(self.script)
-
     def _transform_sample(self, cache_dir: str, format: str = "list"):
         with open(os.path.join(cache_dir, "sampled.txt"), "r") as f:
             samples = f.readlines()
@@ -207,14 +201,14 @@ class Sampler:
         numString = numericStrategyString(numeric, params) if numeric else None
 
         # Generate script
-        self.script = _splc.generate_script(
+        script = _splc.generate_script(
             binary=binString,
             numeric=numString,
         )
 
         # serialize data and script in tempdir and execute splc
         with tempfile.TemporaryDirectory() as tmpdir:
-            self._serialize_data(tmpdir)
+            _splc.serialize_data(tmpdir, {"vm.xml": self.vm, "script.a": script})
             self.splc.execute(tmpdir)
 
             # extract sampled configurations

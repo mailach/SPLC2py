@@ -1,7 +1,18 @@
+import os
 from typing import Dict, Sequence
 import xml.etree.ElementTree as ET
+from numpy import isin
 import pandas as pd
 import docker
+
+
+def serialize_data(cache_dir: str, artifacts: dict):
+    for filename, artifact in artifacts.items():
+        if "xml" in filename:
+            artifact.write(os.path.join(cache_dir, filename))
+        else:
+            with open(os.path.join(cache_dir, filename), "w") as f:
+                f.write(artifact)
 
 
 def generate_mlsettings(settings: Sequence[Dict[str, any]]):

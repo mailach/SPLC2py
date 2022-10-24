@@ -12,15 +12,6 @@ class Model:
         self.splc = _splc.SplcExecutor()
         self.fitted = False
 
-    def _serialize_data(self, cache_dir: str = None):
-
-        self.measurements.write(os.path.join(cache_dir, "measurements.xml"))
-        self.vm.write(os.path.join(cache_dir, "vm.xml"))
-        with open(os.path.join(cache_dir, "script.a"), "w") as f:
-            f.write(self.script)
-        with open(os.path.join(cache_dir, "mlsettings.txt"), "w") as f:
-            f.write(self.mlsettings)
-
     def _generate_model(self, model):
         terms = model.split("+")
         return [
@@ -60,15 +51,20 @@ class Model:
         self.learnHistory = final
 
     def fit(self, measurements, nfp, mlsettings):
-        self.vm, self.measurements = _splc.pandas_to_xml(measurements, nfp)
+        vm, measurements = _splc.pandas_to_xml(measurements, nfp)
 
-        self.mlsettings = _splc.generate_mlsettings(mlsettings)
-        self.script = _splc.generate_script(
-            learning=True, mlsettings_pwd="/application/data/mlsettings.txt", nfp=nfp
-        )
-
+        params = {
+            "vm.xml": vm,
+            "measurements.xml": measurements,
+            "script.a": _splc.generate_script(
+                learning=True,
+                mlsettings_pwd="/application/data/mlsettings.txt",
+                nfp=nfp,
+            ),
+            "mlsettings.txt": _splc.generate_mlsettings(mlsettings),
+        }
         with tempfile.TemporaryDirectory() as tmpdir:
-            self._serialize_data(tmpdir)
+            _splc.serialize_data(tmpdir, params)
             self.splc.execute(tmpdir)
             self._transform_logs(tmpdir)
         self.fitted = True
