@@ -8,9 +8,6 @@ import docker
 
 def _generate_model(history):
     model = _best_model(history)
-    print(history)
-    print(model)
-
     terms = model["Model"].split("+")
     return [
         {
