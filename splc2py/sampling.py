@@ -5,7 +5,7 @@ from typing import Sequence
 import xml.etree.ElementTree as ET
 
 
-from splc2py import _splc, _transform
+from splc2py import _preprocess, _splc, _logs
 
 
 def _featurewise(params=None):
@@ -192,11 +192,11 @@ class Sampler:
 
         # serialize data and script in tempdir and execute splc
         with tempfile.TemporaryDirectory() as tmpdir:
-            _transform.serialize_data(tmpdir, {"vm.xml": self.vm, "script.a": script})
+            _preprocess.serialize_data(tmpdir, {"vm.xml": self.vm, "script.a": script})
             self.splc.execute(tmpdir)
 
             # extract sampled configurations
-            configs = _transform.extract_samples(tmpdir, format)
+            configs = _logs.extract_samples(tmpdir, format)
             if format == "dict":
                 configs = _list_to_dict(configs, self.binary, self.numeric)
 
