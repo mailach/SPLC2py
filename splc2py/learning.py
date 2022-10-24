@@ -12,44 +12,6 @@ class Model:
         self.splc = _splc.SplcExecutor()
         self.fitted = False
 
-    def _generate_model(self, model):
-        terms = model.split("+")
-        return [
-            {
-                "coefficient": float(t.split(" * ")[0]),
-                "options": t.strip().split(" * ")[1:],
-            }
-            for t in terms
-        ]
-
-    def _best_model(self, models):
-        best = [float(models[0]["ValidationError"]), 0]
-        for i in range(len(models)):
-            if float(models[i]["ValidationError"]) < best[0]:
-                best[0] = float(models[i]["ValidationError"])
-                best[1] = i
-        return models[best[1]]
-
-    def _transform_logs(self, tmpdir):
-        with open(os.path.join(tmpdir, "logs.txt"), "r") as f:
-            logs = f.readlines()
-
-        beginModels = logs.index("command: analyze-learning\n") + 1
-        endModels = logs.index("Analyze finished\n")
-        table = logs[beginModels:endModels]
-        header = [h.strip() for h in table[0].split(",")]
-        final = []
-        for row in table[3:]:
-            row = row.split(";")
-            m = {}
-            for i in range(len(row)):
-                m[header[i]] = row[i]
-            final.append(m)
-        best = self._best_model(final)
-
-        self.model = self._generate_model(best["Model"])
-        self.learnHistory = final
-
     def fit(self, measurements, nfp, mlsettings):
         vm, measurements = _splc.pandas_to_xml(measurements, nfp)
 
@@ -66,7 +28,7 @@ class Model:
         with tempfile.TemporaryDirectory() as tmpdir:
             _splc.serialize_data(tmpdir, params)
             self.splc.execute(tmpdir)
-            self._transform_logs(tmpdir)
+            self.model, self.learnHistory = _splc.extract_model_from_logs(tmpdir)
         self.fitted = True
 
     def to_string(self):

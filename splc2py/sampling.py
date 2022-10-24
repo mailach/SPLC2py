@@ -136,12 +136,6 @@ def numericStrategyString(method: str, params=None):
     return numericStrategies[method](params)
 
 
-def _extract_options(config: str):
-    config = config.split('"')[1].split("%;%")
-    config = [option for option in config if option != ""]
-    return config
-
-
 def _get_binary_features(vm):
     return [
         option.find("name").text
@@ -180,15 +174,6 @@ class Sampler:
         self.numeric = _get_numeric_features(vm)
         self.binary = _get_binary_features(vm)
 
-    def _transform_sample(self, cache_dir: str, format: str = "list"):
-        with open(os.path.join(cache_dir, "sampled.txt"), "r") as f:
-            samples = f.readlines()
-
-        configs = [_extract_options(config) for config in samples]
-        if format == "dict":
-            configs = _list_to_dict(configs, self.binary, self.numeric)
-        return configs
-
     def sample(
         self,
         binary: str = "allbinary",
@@ -212,6 +197,8 @@ class Sampler:
             self.splc.execute(tmpdir)
 
             # extract sampled configurations
-            configs = self._transform_sample(tmpdir, format)
+            configs = _splc.extract_samples(tmpdir, format)
+            if format == "dict":
+                configs = _list_to_dict(configs, self.binary, self.numeric)
 
         return configs
