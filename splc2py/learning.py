@@ -68,7 +68,6 @@ class Model:
         )
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            tmpdir = "/home/mailach/git/splc2py/tmp/"
             self._serialize_data(tmpdir)
             self.splc.execute(tmpdir)
             self._transform_logs(tmpdir)
