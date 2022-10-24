@@ -5,7 +5,7 @@ import docker
 
 
 def generate_mlsettings(settings: Sequence[Dict[str, any]]):
-    settings = [k + v for k, v in settings.items()]
+    settings = [k + " " + str(v) for k, v in settings.items()]
     return "\n".join(settings)
 
 
