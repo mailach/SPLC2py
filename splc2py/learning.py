@@ -91,7 +91,6 @@ class Model:
 
     def _calculate_prediction(self, x):
         interim = []
-        print(self.model)
         for term in self.model:
             options = math.prod([x[option] for option in term["options"]])
             interim.append(term["coefficient"] * options)
