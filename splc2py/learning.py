@@ -1,17 +1,14 @@
-from copy import deepcopy
 import os
 import math
 import tempfile
 import logging
 
 import pandas as pd
-import xml.etree.ElementTree as ET
 from splc2py import _splc
 
 
 class Model:
-    def __init__(self, vm: ET):
-        self.vm = vm
+    def __init__(self):
         self.splc = _splc.SplcExecutor()
         self.fitted = False
 
