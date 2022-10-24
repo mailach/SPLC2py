@@ -110,5 +110,5 @@ SPLC supports a wide list of mlsettings, such as `lossFunction`, `epsilon`, `par
 ```python
 model.fit(measurement_data, "nfp", mlsettings = {"lossFunction": "LEASTSQUARES", 
                                                  "parallelization": "false",
-                                                 "useBackward": "0"}) 
+                                                 "useBackward": 0}) 
 ```
