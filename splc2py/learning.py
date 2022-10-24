@@ -1,3 +1,4 @@
+from copy import deepcopy
 import os
 import math
 import tempfile
@@ -61,14 +62,16 @@ class Model:
         self.model = self._generate_model(best["Model"])
         self.learnHistory = final
 
-    def fit(self, measurements: ET, nfp, mlsettings):
-        self.measurements = measurements
+    def fit(self, measurements, nfp, mlsettings):
+        self.vm, self.measurements = _splc.pandas_to_xml(measurements, nfp)
+
         self.mlsettings = _splc.generate_mlsettings(mlsettings)
         self.script = _splc.generate_script(
             learning=True, mlsettings_pwd="/application/data/mlsettings.txt", nfp=nfp
         )
 
         with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir = "/home/mailach/git/splc2py/tmp/"
             self._serialize_data(tmpdir)
             self.splc.execute(tmpdir)
             self._transform_logs(tmpdir)
@@ -88,6 +91,7 @@ class Model:
 
     def _calculate_prediction(self, x):
         interim = []
+        print(self.model)
         for term in self.model:
             options = math.prod([x[option] for option in term["options"]])
             interim.append(term["coefficient"] * options)
@@ -98,6 +102,9 @@ class Model:
             logging.error("No model fitted yet.")
             raise Exception
         else:
+            if "root" not in X:
+                X = X.copy()
+                X["root"] = 1
             result = X.apply(self._calculate_prediction, axis=1)
             if len(result) == 1:
                 return result[0]
