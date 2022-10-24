@@ -6,7 +6,7 @@ A wrapper for easy execution of SPLConqueror (https://github.com/se-sic/SPLConqu
 pip install git+https://github.com/mailach/SPLC2py.git@main 
 ```
 
-Currently the following SPLC functionalities are supported:
+Currently sampling and learning of SPLC is supported. For easy usage of these functionalities the Sampler and Model class work independent of each other and currently executing full workflows is not supported. 
 
 
 ## Sampling
@@ -74,4 +74,41 @@ Currently, two return formats are supported. The default is `'list'` which will 
 ```python
 sampler.sample(binary="featurewise") # returns a list of lists, holding enabled options
 sampler.sample(binary="featurewise", format = "dict") # returns a list of dictionaries with option: 1 if enabled(option) else 0 and floats for numeric features
+```
+
+
+## Learning
+For learning the `Model` class expects you to provide valid measurements in either splc-xml loaded as `xml.etree.ElementTree` or format or a table loaded as `pandas.DataFrame`, in which binary options are represented as 1 or 0 and numeric features hold the corresponding numeric value.
+
+```python
+import pandas as pd
+import xml.etree.ElementTree as ET
+
+from splc2py.learning import Model
+
+measurement_data = pd.read_csv("path/to/traindata") # for pandas format
+measurement_data = ET.parse("path/to/traindata") # for splc xml
+
+model = Model()
+model.fit(measurement_data, "nfp") 
+```
+
+*Note: the `Model.fit()` method will generate a generic feature model from the input data, since this is needed by SPLC for learning. Therefore, the internal validation that is performed by SPLC on the learning set will always evaluate to true. You are responsible for providing valid configurations.* 
+
+You can use the `model` instance to generate predictions by providing a pandas dataframe. You can further print the model as a string and get the learning history.
+
+```python
+test_data = pd.read_csv("path/to/testdata")
+predictions = model.fit(test_data) 
+print(model.to_string())
+print(model.learnHistory)
+```
+
+### Specifying machine learning settings
+SPLC supports a wide list of mlsettings, such as `lossFunction`, `epsilon`, `parallelization` or `bagging`. You can pass individual settings as a dictionary to the `Model.fit()` method. For a full list of supported settings visit the SPLC documentation.
+
+```python
+model.fit(measurement_data, "nfp", mlsettings = {"lossFunction": "LEASTSQUARES", 
+                                                 "parallelization": "false",
+                                                 "useBackward": "0"}) 
 ```
