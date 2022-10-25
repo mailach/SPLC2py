@@ -33,10 +33,10 @@ def _pandas_to_splcxml(data, nfp, binary, numeric):
     for _, row in data.iterrows():
         r = ET.SubElement(root, "row")
         bin, num = _row_to_str(row, binary, numeric)
-        ET.SubElement(r, "data", columname="Configuration").text = str(bin)
+        ET.SubElement(r, "data", column="Configuration").text = str(bin)
         if len(numeric):
-            ET.SubElement(r, "data", columname="Variable Features").text = str(num)
-        ET.SubElement(r, "data", columname=nfp).text = str(row[nfp])
+            ET.SubElement(r, "data", column="Variable Features").text = str(num)
+        ET.SubElement(r, "data", column=nfp).text = str(row[nfp])
     return ET.ElementTree(root)
 
 
