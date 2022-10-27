@@ -8,131 +8,111 @@ import xml.etree.ElementTree as ET
 from splc2py import _preprocess, _splc, _logs
 
 
-def _featurewise(params=None):
-    return "featurewise"
-
-
-def _pairwise(params=None):
-    return "pairwise"
-
-
-def _negfeaturewise(params=None):
-    return "negfw"
-
-
-def _allbinary(params=None):
-    return "allbinary"
-
-
 def _distancebased(params):
     try:
         db = f"distance-based optionWeight:{params['optionWeight']} numConfigs:{params['numConfigs']}"
-    except Exception as e:
+    except:
         logging.error(
             "For using distance-based sampling you need to specify numConfigs and optionWeight."
         )
-        raise e
+        raise
     return db
 
 
 def _twise(params):
     try:
         t = f"twise t:{params['t']}"
-    except Exception as e:
+    except:
         logging.error("For using twise sampling you need to specify t.")
-        raise e
+        raise
     return t
 
 
-def binaryStrategyString(method: str, params=None):
-    binStrategies = {
-        "featurewise": _featurewise,
-        "pairwise": _pairwise,
-        "negfeaturewise": _negfeaturewise,
+def binary_strategy_string(method: str, params=None):
+    bin_strategies = {
+        "featurewise": "featurewise",
+        "pairwise": "pairwise",
+        "negfeaturewise": "negfeaturewise",
         "distance-based": _distancebased,
         "twise": _twise,
-        "allbinary": _allbinary,
+        "allbinary": "allbinary",
     }
-    return binStrategies[method](params)
 
+    if isinstance(bin_strategies[method], str):
+        return bin_strategies[method]
 
-def _centralcomposite(params):
-    return "centralcomposite"
-
-
-def _boxbehnken(params):
-    return "boxbehnken"
-
-
-def _fullfactorial(params):
-    return "fullfactorial"
+    return bin_strategies[method](params)
 
 
 def _random(params):
     try:
         r = f"random sampleSize:{params['sampleSize']} seed:{params['seed']}"
-    except Exception as e:
+    except:
         logging.error(
             "For using random sampling you need to specify sampleSize and seed."
         )
-        raise e
+        raise
     return r
 
 
 def _hypersampling(params):
     try:
         r = f"hypersampling precision:{params['precision']}"
-    except Exception as e:
+    except:
         logging.error("For using hypersampling you need to specify precision.")
-        raise e
+        raise
     return r
 
 
 def _onefactoratatime(params):
     try:
         r = f"onefactoratatime distinctValuesPerOption:{params['distinctValuesPerOption']}"
-    except Exception as e:
+    except:
         logging.error(
             "For using onefactoratatime you need to specify distinctValuesPerOption."
         )
-        raise e
+        raise
     return r
 
 
 def _plackettburman(params):
     try:
         pb = f"plackettburman measurements:{params['measurements']} level:{params['level']}"
-    except Exception as e:
+    except:
         logging.error(
             "For using placketburman desing you need to specify measurements and level."
         )
-        raise e
+        raise
     return pb
 
 
 def _kexchange(params):
     try:
         k = f"kexchange sampleSize:{params['sampleSize']} k:{params['k']}"
-    except Exception as e:
+    except:
         logging.error(
             "For using kexchange sampling you need to specify sampleSize and level."
         )
-        raise e
+        raise
     return k
 
 
-def numericStrategyString(method: str, params=None):
-    numericStrategies = {
+def numeric_strategy_string(method: str, params=None):
+    numeric_strategies = {
         "random": _random,
-        "centralcomposite": _centralcomposite,
+        "centralcomposite": "centralcomposite",
         "plackettburman": _plackettburman,
-        "fullfactorial": _fullfactorial,
-        "boxbehnken": _boxbehnken,
+        "fullfactorial": "fullfactorial",
+        "boxbehnken": "boxbehnken",
         "hypersampling": _hypersampling,
         "onefactoratatime": _onefactoratatime,
         "kexchange": _kexchange,
     }
-    return numericStrategies[method](params)
+
+    if isinstance(numeric_strategies[method], str):
+        return numeric_strategies[method]
+
+    return numeric_strategies[method](params)
 
 
 def _get_binary_features(vm):
@@ -177,17 +157,17 @@ class Sampler:
         self,
         binary: str = "allbinary",
         numeric: str = None,
-        format: str = "list",
+        formatting: str = "list",
         params=None,
     ):
         # Generate strings for sampling strategies
-        binString = binaryStrategyString(binary, params)
-        numString = numericStrategyString(numeric, params) if numeric else None
+        bin_string = binary_strategy_string(binary, params)
+        num_string = numeric_strategy_string(numeric, params) if numeric else None
 
         # Generate script
         script = _splc.generate_script(
-            binary=binString,
-            numeric=numString,
+            binary=bin_string,
+            numeric=num_string,
         )
 
         # serialize data and script in tempdir and execute splc
@@ -197,7 +177,7 @@ class Sampler:
 
             # extract sampled configurations
             configs = _logs.extract_samples(tmpdir, format)
-            if format == "dict":
+            if formatting == "dict":
                 configs = _list_to_dict(configs, self.binary, self.numeric)
 
         return configs

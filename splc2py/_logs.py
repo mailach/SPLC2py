@@ -7,8 +7,8 @@ def _extract_options(config: str):
     return config
 
 
-def extract_samples(cache_dir: str, format: str = "list"):
-    with open(os.path.join(cache_dir, "sampled.txt"), "r") as f:
+def extract_samples(cache_dir: str):
+    with open(os.path.join(cache_dir, "sampled.txt"), "r", encoding="utf-8") as f:
         samples = f.readlines()
 
     configs = [_extract_options(config) for config in samples]
@@ -37,7 +37,7 @@ def _find_best_model(models):
 
 
 def extract_model(tmpdir):
-    with open(os.path.join(tmpdir, "logs.txt"), "r") as f:
+    with open(os.path.join(tmpdir, "logs.txt"), "r", encoding="utf-8") as f:
         logs = f.readlines()
 
     beginModels = logs.index("command: analyze-learning\n") + 1

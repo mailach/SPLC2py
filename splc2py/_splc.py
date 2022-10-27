@@ -15,7 +15,7 @@ def generate_script(
     nfp: str = None,
     solver: str = None,
 ):
-    script = f"log /application/data/logs.txt\n"
+    script = "log /application/data/logs.txt\n"
     script += "vm /application/data/vm.xml\n"
     if binary:
         script += f"binary {binary}\n"
@@ -31,7 +31,7 @@ def generate_script(
 
     if solver:
         script += f"solver {solver}\n"
-    script += f"printconfigs /application/data/sampled.txt\n"
+    script += "printconfigs /application/data/sampled.txt\n"
 
     return script
 

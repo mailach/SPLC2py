@@ -9,6 +9,8 @@ from splc2py import _preprocess, _splc, _logs
 class Model:
     def __init__(self):
         self.fitted = False
+        self.model = None
+        self.learn_history = None
 
     def fit(self, measurements, nfp, mlsettings):
         vm, measurements = _preprocess.prepare_learning_data(measurements, nfp)
@@ -28,7 +30,7 @@ class Model:
             _preprocess.serialize_data(tmpdir, params)
             splc = _splc.SplcExecutor()
             splc.execute(tmpdir)
-            self.model, self.learnHistory = _logs.extract_model(tmpdir)
+            self.model, self.learn_history = _logs.extract_model(tmpdir)
         self.fitted = True
 
     def to_string(self):
