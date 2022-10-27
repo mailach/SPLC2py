@@ -73,7 +73,7 @@ Currently, two return formats are supported. The default is `'list'` which will 
 
 ```python
 sampler.sample(binary="featurewise") # returns a list of lists, holding enabled options
-sampler.sample(binary="featurewise", format = "dict") # returns a list of dictionaries with option: 1 if enabled(option) else 0 and floats for numeric features
+sampler.sample(binary="featurewise", formatting = "dict") # returns a list of dictionaries with option: 1 if enabled(option) else 0 and floats for numeric features
 ```
 
 
@@ -101,7 +101,7 @@ You can use the `model` instance to generate predictions by providing a pandas d
 test_data = pd.read_csv("path/to/testdata")
 predictions = model.fit(test_data) 
 print(model.to_string())
-print(model.learnHistory)
+print(model.learn_history)
 ```
 
 ### Specifying machine learning settings
