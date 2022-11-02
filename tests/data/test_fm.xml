@@ -63,11 +63,11 @@
       </postfix>
       <parent>root</parent>
       <impliedOptions>
-        <options>InMemory</options>
+        <option>InMemory</option>
       </impliedOptions>
       <excludedOptions>
-        <options>HostnameLookups</options>
-        <options>HostnameLookups</options>
+        <option>HostnameLookups</option>
+        <option>HostnameLookups</option>
       </excludedOptions>
       <optional>True</optional>
     </configurationOption>
@@ -125,7 +125,9 @@
     </configurationOption>
   </binaryOptions>
   <numericOptions />
-  <booleanConstraints />
+  <booleanConstraints>
+  <constraint>root | !HostnameLookups</constraint>
+  </booleanConstraints>
   <nonBooleanConstraints />
   <mixedConstraints />
 </vm>

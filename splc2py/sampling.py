@@ -148,6 +148,7 @@ def _list_to_dict(configs: Sequence[Sequence[str]], binary, numeric):
 
 class Sampler:
     def __init__(self, vm: ET):
+
         self.vm = vm
         self.splc = _splc.SplcExecutor()
         self.numeric = _get_numeric_features(vm)
@@ -176,7 +177,7 @@ class Sampler:
             self.splc.execute(tmpdir)
 
             # extract sampled configurations
-            configs = _logs.extract_samples(tmpdir, format)
+            configs = _logs.extract_samples(tmpdir)
             if formatting == "dict":
                 configs = _list_to_dict(configs, self.binary, self.numeric)
 
