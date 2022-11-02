@@ -110,6 +110,9 @@ class SplcFmParser(FmParser):
                 )
             if bo["optional"] == "False":
                 constraints += _optional(bo["name"])
+
+            if bo["parent"]:
+                constraints += _implication(bo["name"], [bo["parent"]])
         return binaries, constraints
 
     def _extract_numerics(self):
