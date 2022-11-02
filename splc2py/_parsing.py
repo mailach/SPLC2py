@@ -94,7 +94,7 @@ class SplcFmParser(FmParser):
     """
 
     def __init__(self):
-        self.schema = xmlschema.XMLSchema("splc2py/data/schema_splc.xsd")
+        self.schema = xmlschema.XMLSchema(xsd_path)
 
     def _extract_binaries(self):
         binaries = []
