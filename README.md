@@ -112,3 +112,22 @@ model.fit(measurement_data, "nfp", mlsettings = {"lossFunction": "LEASTSQUARES",
                                                  "parallelization": "false",
                                                  "useBackward": 0}) 
 ```
+
+## Parsing FM from SPLC format
+
+Generate a dimacs from the *binary* options in a splc-xml file. 
+
+```python
+import xml.etree.ElementTree as ET
+from splc2py.fmodel import FeatureModel
+
+fm_xml = ET.parse("path/to/fm.xml")
+fm = FeatureModel(fm_xml)
+
+# get attributes of feature model
+fm.dimacs
+fm.constraints
+fm.binary
+fm.numeric
+
+```
