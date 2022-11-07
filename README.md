@@ -1,12 +1,15 @@
 # SPLC2py
 
-A wrapper for easy execution of SPLConqueror (https://github.com/se-sic/SPLConqueror) in your python workflows. The package relies on your local docker setup and uses docker-py (https://github.com/docker/docker-py) to execute a container with SPLConqueror. Note: You need to have docker installed and your executing user has to be member of the `docker` group (i.e. needs to be allowed to use docker without `sudo`).
+A wrapper for easy execution of SPLConqueror (https://github.com/se-sic/SPLConqueror) in your python workflows. The package relies either on a local SPLConqueror installation or your local docker setup to execute a container with SPLConqueror. 
 
 ```
 pip install git+https://github.com/mailach/SPLC2py.git@main 
 ```
 
 Currently sampling and learning of SPLC is supported. For easy usage of these functionalities the Sampler and Model class work independent of each other and currently executing full workflows is not supported. 
+
+## Backends
+SPLC2py allows for two execution backends `local` or `docker`. You can specify the backend when creating a `Sampler` or `Model` instance. `local` execution can be used to run SPLC on kubernetes when using the Dockerimage `mailach/splc:py3.9`. *Note: When using local execution, SPLC2py expects you to have SPLconqueror installed at `/SPLConqueror/` and a working mono installation. When using docker,  you need to have docker installed and your executing user has to be member of the `docker` group (i.e. needs to be allowed to use docker without `sudo`).*
 
 
 ## Sampling
@@ -17,7 +20,7 @@ import xml.etree.ElementTree as ET
 from splc2py.sampling import Sampler
 
 vm = ET.parse("path/to/vm.xml")
-sampler = Sampler(vm)
+sampler = Sampler(vm, "docker") # specify the backend to execute SPLC
 ```
 
 ### Binary sampling strategies
@@ -89,7 +92,7 @@ from splc2py.learning import Model
 measurement_data = pd.read_csv("path/to/traindata") # for pandas format
 measurement_data = ET.parse("path/to/traindata") # for splc xml
 
-model = Model()
+model = Model("docker") # specify the backend to execute SPLC
 model.fit(measurement_data, "nfp") 
 ```
 
