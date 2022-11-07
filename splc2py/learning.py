@@ -7,29 +7,31 @@ from splc2py import _preprocess, _splc, _logs
 
 
 class Model:
-    def __init__(self):
+    def __init__(self, backend):
         self.fitted = False
         self.model = None
         self.learn_history = None
+        self.splc = _splc.SplcExecutorFactor(backend)
 
     def fit(self, measurements, nfp, mlsettings):
         vm, measurements = _preprocess.prepare_learning_data(measurements, nfp)
 
-        params = {
-            "vm.xml": vm,
-            "measurements.xml": measurements,
-            "script.a": _splc.generate_script(
-                learning=True,
-                mlsettings_pwd="/application/data/mlsettings.txt",
-                nfp=nfp,
-            ),
-            "mlsettings.txt": _splc.generate_mlsettings(mlsettings),
-        }
-
         with tempfile.TemporaryDirectory() as tmpdir:
+
+            params = {
+                "vm.xml": vm,
+                "measurements.xml": measurements,
+                "script.a": _splc.generate_script(
+                    path=tmpdir,
+                    learning=True,
+                    mlsettings_pwd="{tmp_dir}/mlsettings.txt",
+                    nfp=nfp,
+                ),
+                "mlsettings.txt": _splc.generate_mlsettings(mlsettings),
+            }
+
             _preprocess.serialize_data(tmpdir, params)
-            splc = _splc.SplcExecutor()
-            splc.execute(tmpdir)
+            self.splc.execute(tmpdir)
             self.model, self.learn_history = _logs.extract_model(tmpdir)
         self.fitted = True
 

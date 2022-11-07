@@ -51,6 +51,8 @@ def prepare_learning_data(data: pd.DataFrame(), nfp) -> ET:
 
 
 def serialize_data(cache_dir: str, artifacts: dict):
+    if not os.path.exists(cache_dir):
+        os.makedirs(cache_dir)
     for filename, artifact in artifacts.items():
         if "xml" in filename:
             artifact.write(os.path.join(cache_dir, filename))

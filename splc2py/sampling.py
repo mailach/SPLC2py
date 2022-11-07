@@ -147,10 +147,10 @@ def _list_to_dict(configs: Sequence[Sequence[str]], binary, numeric):
 
 
 class Sampler:
-    def __init__(self, vm: ET):
+    def __init__(self, vm: ET, backend: str):
 
         self.vm = vm
-        self.splc = _splc.SplcExecutor()
+        self.splc = _splc.SplcExecutorFactor(backend)
         self.numeric = _get_numeric_features(vm)
         self.binary = _get_binary_features(vm)
 
@@ -166,13 +166,15 @@ class Sampler:
         num_string = numeric_strategy_string(numeric, params) if numeric else None
 
         # Generate script
-        script = _splc.generate_script(
-            binary=bin_string,
-            numeric=num_string,
-        )
 
         # serialize data and script in tempdir and execute splc
         with tempfile.TemporaryDirectory() as tmpdir:
+            print(tmpdir)
+            script = _splc.generate_script(
+                path=tmpdir,
+                binary=bin_string,
+                numeric=num_string,
+            )
             _preprocess.serialize_data(tmpdir, {"vm.xml": self.vm, "script.a": script})
             self.splc.execute(tmpdir)
 
