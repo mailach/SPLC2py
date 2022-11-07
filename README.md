@@ -9,7 +9,7 @@ pip install git+https://github.com/mailach/SPLC2py.git@main
 Currently sampling and learning of SPLC is supported. For easy usage of these functionalities the Sampler and Model class work independent of each other and currently executing full workflows is not supported. 
 
 ## Backends
-SPLC2py allows for two execution backends `local` or `docker`. You can specify the backend when creating a `Sampler` or `Model` instance. `local` execution can be used to run SPLC on kubernetes when using the Dockerimage `mailach/splc:py3.9`. *Note: When using local execution, SPLC2py expects you to have SPLconqueror installed at `/SPLConqueror/` and a working mono installation. When using docker,  you need to have docker installed and your executing user has to be member of the `docker` group (i.e. needs to be allowed to use docker without `sudo`).*
+SPLC2py allows for two execution backends `local` or `docker`. You can specify the backend when creating a `Sampler` or `Model` instance. `local` execution can be used to run SPLC on kubernetes when using the Dockerimage `mailach/splc:py3.7`. *Note: When using local execution, SPLC2py expects you to have SPLconqueror installed at `/SPLConqueror/` and a working mono installation. When using docker,  you need to have docker installed and your executing user has to be member of the `docker` group (i.e. needs to be allowed to use docker without `sudo`).*
 
 
 ## Sampling
