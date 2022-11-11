@@ -32,7 +32,7 @@ def binary_strategy_string(method: str, params=None):
     bin_strategies = {
         "featurewise": "featurewise",
         "pairwise": "pairwise",
-        "negfeaturewise": "negfeaturewise",
+        "negfw": "negfw",
         "distance-based": _distancebased,
         "twise": _twise,
         "allbinary": "allbinary",
