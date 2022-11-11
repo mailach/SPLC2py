@@ -32,7 +32,7 @@ For (negative) featurewise and pairwise sampling no further parameters are neede
 
 ```python
 sampler.sample(binary="featurewise")
-sampler.sample(binary="negfeaturewise")
+sampler.sample(binary="negfw")
 sampler.sample(binary="pairwise")
 ```
 
