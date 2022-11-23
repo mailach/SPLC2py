@@ -85,8 +85,6 @@ For learning the `Model` class expects you to provide valid measurements as a ta
 
 ```python
 import pandas as pd
-import xml.etree.ElementTree as ET
-
 from splc2py.learning import Model
 
 measurement_data = pd.read_csv("path/to/traindata") # for pandas format
