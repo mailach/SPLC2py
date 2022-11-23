@@ -81,7 +81,7 @@ sampler.sample(binary="featurewise", formatting = "dict") # returns a list of di
 
 
 ## Learning
-For learning the `Model` class expects you to provide valid measurements in either splc-xml loaded as a table loaded as `pandas.DataFrame`, in which binary options are represented as 1 or 0 and numeric features hold the corresponding numeric value.
+For learning the `Model` class expects you to provide valid measurements as a table loaded as `pandas.DataFrame`, in which binary options are represented as 1 or 0 and numeric features hold the corresponding numeric value.
 
 ```python
 import pandas as pd
