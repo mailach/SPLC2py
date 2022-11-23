@@ -81,7 +81,7 @@ sampler.sample(binary="featurewise", formatting = "dict") # returns a list of di
 
 
 ## Learning
-For learning the `Model` class expects you to provide valid measurements in either splc-xml loaded as `xml.etree.ElementTree` or format or a table loaded as `pandas.DataFrame`, in which binary options are represented as 1 or 0 and numeric features hold the corresponding numeric value.
+For learning the `Model` class expects you to provide valid measurements in either splc-xml loaded as a table loaded as `pandas.DataFrame`, in which binary options are represented as 1 or 0 and numeric features hold the corresponding numeric value.
 
 ```python
 import pandas as pd
@@ -90,7 +90,6 @@ import xml.etree.ElementTree as ET
 from splc2py.learning import Model
 
 measurement_data = pd.read_csv("path/to/traindata") # for pandas format
-measurement_data = ET.parse("path/to/traindata") # for splc xml
 
 model = Model("docker") # specify the backend to execute SPLC
 model.fit(measurement_data, "nfp") 
@@ -102,7 +101,7 @@ You can use the `model` instance to generate predictions by providing a pandas d
 
 ```python
 test_data = pd.read_csv("path/to/testdata")
-predictions = model.fit(test_data) 
+predictions = model.predict(test_data) 
 print(model.to_string())
 print(model.learn_history)
 ```
