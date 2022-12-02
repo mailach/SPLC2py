@@ -169,7 +169,6 @@ class Sampler:
 
         # serialize data and script in tempdir and execute splc
         with tempfile.TemporaryDirectory() as tmpdir:
-            print(tmpdir)
             script = _splc.generate_script(
                 path=tmpdir,
                 binary=bin_string,
