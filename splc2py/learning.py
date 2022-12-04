@@ -1,6 +1,8 @@
 import math
 import tempfile
 import logging
+from functools import reduce
+import operator
 
 import pandas as pd
 from splc2py import _preprocess, _splc, _logs
@@ -50,7 +52,7 @@ class Model:
     def _calculate_prediction(self, x):
         interim = []
         for term in self.model:
-            options = math.prod([x[option] for option in term["options"]])
+            options = reduce(operator.mul, [x[option] for option in term["options"]], 1)
             interim.append(term["coefficient"] * options)
         return sum(interim)
 
