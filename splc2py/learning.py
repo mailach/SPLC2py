@@ -14,10 +14,12 @@ class Model:
         self.fitted = False
         self.model = None
         self.learn_history = None
+        self.learning_time = None
+        self.configs_large_dev = None
         self.artifact_repo = None
         self.splc = _splc.SplcExecutorFactor(backend)
 
-    def fit(self, measurements, nfp, mlsettings):
+    def fit(self, measurements, nfp, mlsettings={}):
         vm, measurements = _preprocess.prepare_learning_data(measurements, nfp)
         self.artifact_repo = os.path.join(tempfile.gettempdir(), uuid.uuid4().hex)
         os.mkdir(self.artifact_repo)
@@ -36,7 +38,12 @@ class Model:
 
         _preprocess.serialize_data(self.artifact_repo, params)
         self.splc.execute(self.artifact_repo)
-        self.model, self.learn_history = _logs.extract_model(self.artifact_repo)
+        (
+            self.model,
+            self.learn_history,
+            self.learning_time,
+            self.configs_large_dev,
+        ) = _logs.extract_model(self.artifact_repo)
         self.fitted = True
 
     def to_string(self):

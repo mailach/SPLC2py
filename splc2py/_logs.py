@@ -1,4 +1,5 @@
 import os
+import string
 
 
 def _extract_options(config: str):
@@ -35,12 +36,25 @@ def _find_best_model(models):
     return models[best[1]]
 
 
+def _time_to_sec(time_str):
+    hours, mins, secs = time_str.split(":")
+    return int(hours) * 60 * 60 + int(mins) * 60 + float(secs)
+
+
+def _get_index(rows, str_to_search):
+    return [i for i in range(len(rows)) if str_to_search in rows[i]][0]
+
+
 def extract_model(tmpdir):
     with open(os.path.join(tmpdir, "logs.txt"), "r", encoding="utf-8") as f:
         logs = f.readlines()
 
     beginModels = logs.index("command: analyze-learning\n") + 1
     endModels = logs.index("Analyze finished\n")
+    learning_time = _time_to_sec(logs[_get_index(logs, "Elapsed=")].split("=")[1])
+    configs_with_to_large_dev = (
+        logs[_get_index(logs, "large deviation:")].split(":")[1].strip()
+    )
     table = logs[beginModels:endModels]
     header = [h.strip() for h in table[0].split(",")]
     history = []
@@ -51,4 +65,4 @@ def extract_model(tmpdir):
             m[header[i]] = row[i]
         history.append(m)
 
-    return _generate_model(history), history
+    return _generate_model(history), history, learning_time, configs_with_to_large_dev
