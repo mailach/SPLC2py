@@ -1,5 +1,5 @@
-import math
 import os
+import uuid
 import tempfile
 import logging
 from functools import reduce
@@ -14,28 +14,29 @@ class Model:
         self.fitted = False
         self.model = None
         self.learn_history = None
+        self.artifact_repo = None
         self.splc = _splc.SplcExecutorFactor(backend)
 
     def fit(self, measurements, nfp, mlsettings):
         vm, measurements = _preprocess.prepare_learning_data(measurements, nfp)
+        self.artifact_repo = os.path.join(tempfile.gettempdir(), uuid.uuid4().hex)
+        os.mkdir(self.artifact_repo)
 
-        with tempfile.TemporaryDirectory() as tmpdir:
+        params = {
+            "vm.xml": vm,
+            "measurements.xml": measurements,
+            "script.a": _splc.generate_script(
+                path=self.artifact_repo,
+                learning=True,
+                mlsettings_pwd=f"{self.artifact_repo}/mlsettings.txt",
+                nfp=nfp,
+            ),
+            "mlsettings.txt": _splc.generate_mlsettings(mlsettings),
+        }
 
-            params = {
-                "vm.xml": vm,
-                "measurements.xml": measurements,
-                "script.a": _splc.generate_script(
-                    path=tmpdir,
-                    learning=True,
-                    mlsettings_pwd="{tmp_dir}/mlsettings.txt",
-                    nfp=nfp,
-                ),
-                "mlsettings.txt": _splc.generate_mlsettings(mlsettings),
-            }
-
-            _preprocess.serialize_data(tmpdir, params)
-            self.splc.execute(tmpdir)
-            self.model, self.learn_history = _logs.extract_model(tmpdir)
+        _preprocess.serialize_data(self.artifact_repo, params)
+        self.splc.execute(self.artifact_repo)
+        self.model, self.learn_history = _logs.extract_model(self.artifact_repo)
         self.fitted = True
 
     def to_string(self):

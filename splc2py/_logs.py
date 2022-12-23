@@ -10,7 +10,6 @@ def _extract_options(config: str):
 def extract_samples(cache_dir: str):
     with open(os.path.join(cache_dir, "sampled.txt"), "r", encoding="utf-8") as f:
         samples = f.readlines()
-
     configs = [_extract_options(config) for config in samples]
     return configs
 
