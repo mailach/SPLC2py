@@ -1,5 +1,4 @@
 import os
-import string
 
 
 def _extract_options(config: str):
