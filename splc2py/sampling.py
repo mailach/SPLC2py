@@ -1,3 +1,5 @@
+import os
+import uuid
 import logging
 import tempfile
 
@@ -153,6 +155,7 @@ class Sampler:
         self.splc = _splc.SplcExecutorFactor(backend)
         self.numeric = _get_numeric_features(vm)
         self.binary = _get_binary_features(vm)
+        self.artifact_repo = None
 
     def sample(
         self,
@@ -168,18 +171,19 @@ class Sampler:
         # Generate script
 
         # serialize data and script in tempdir and execute splc
-        with tempfile.TemporaryDirectory() as tmpdir:
-            script = _splc.generate_script(
-                path=tmpdir,
-                binary=bin_string,
-                numeric=num_string,
-            )
-            _preprocess.serialize_data(tmpdir, {"vm.xml": self.vm, "script.a": script})
-            self.splc.execute(tmpdir)
 
-            # extract sampled configurations
-            configs = _logs.extract_samples(tmpdir)
-            if formatting == "dict":
-                configs = _list_to_dict(configs, self.binary, self.numeric)
+        self.artifact_repo = os.path.join(tempfile.gettempdir(), uuid.uuid4().hex)
+        script = _splc.generate_script(
+            path=self.artifact_repo,
+            binary=bin_string,
+            numeric=num_string,
+        )
+        _preprocess.serialize_data(self.artifact_repo, {"vm.xml": self.vm, "script.a": script})
+        self.splc.execute(self.artifact_repo)
+
+        # extract sampled configurations
+        configs = _logs.extract_samples(self.artifact_repo)
+        if formatting == "dict":
+            configs = _list_to_dict(configs, self.binary, self.numeric)
 
         return configs
